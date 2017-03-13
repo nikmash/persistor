@@ -5,7 +5,7 @@
     "version": "2.1.0",
     "dependencies": {
         "q": "1.x",
-        "supertype": "",
+        "supertype": "git://github.com/nikmash/supertype.git#extended-templates-createProps-fix",
         "underscore": "1.x",
         "mongodb-bluebird": "x",
         "bluebird": "x",
