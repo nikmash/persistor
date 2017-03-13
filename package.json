@@ -5,7 +5,7 @@
     "version": "2.1.0",
     "dependencies": {
         "q": "1.x",
-        "supertype": "2.1.*",
+        "supertype": "",
         "underscore": "1.x",
         "mongodb-bluebird": "x",
         "bluebird": "x",
