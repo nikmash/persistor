@@ -42,6 +42,9 @@ describe('persistor transaction checks', function () {
                 }),
             knex.schema.dropTableIfExists(schemaTable)]);
     })
+    after('closes the database', function () {
+        return knex.destroy();
+    });
     beforeEach('arrange', function () {
         ObjectTemplate = require('supertype');
         PersistObjectTemplate = require('../index.js')(ObjectTemplate, null, ObjectTemplate);
@@ -56,7 +59,7 @@ describe('persistor transaction checks', function () {
 
         schema.Employee.parents = {
             homeAddress: {id: 'address_id',
-            fetch: false}
+                fetch: false}
         };
         schema.Employee.children = {
             roles: {id: 'employee_id'}

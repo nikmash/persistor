@@ -43,15 +43,6 @@ var DateTable = PersistObjectTemplate.create('DateTable', {
     dateField: {type: Date}
 });
 
-// var ChangeFieldTypeTable = PersistObjectTemplate.create('ChangeFieldTypeTable', {
-//     id: {type: Number},
-//     name: {type: String, value: 'Test Employee'},
-//     init: function (id, name) {
-//         this.id = id;
-//         this.name = name;
-//     }
-// })
-
 var SingleIndexTable = PersistObjectTemplate.create('SingleIndexTable', {
     id: {type: Number},
     name: {type: String, value: 'Name'},
@@ -209,7 +200,9 @@ describe('schema update checks', function () {
 
         ]).should.notify(done);
     });
-
+    after('closes the database', function () {
+        return knex.destroy();
+    });
 
 
 
@@ -272,18 +265,6 @@ describe('schema update checks', function () {
             return PersistObjectTemplate.checkForKnexTable(CreateNewType).should.eventually.equal(true);
         })
     });
-
-
-    // it('use the same index names on multiple tables and create index to check the name generation process', function () {
-    //     schema.Employee.indexes = JSON.parse('[{"name": "single_index","def": {"columns": ["name"],"type": "unique"}}]');
-    //     schema.Manager.indexes = JSON.parse('[{"name": "single_index","def": {"columns": ["name"],"type": "unique"}}]');
-    //
-    //     return PersistObjectTemplate.synchronizeKnexTableFromTemplate(Employee).then(function () {
-    //         return PersistObjectTemplate.checkForKnexTable(Employee).should.eventually.equal(true);
-    //     })
-    //
-    // });
-
 
     it('add a new type and check if the table creation is adding the index definition...', function() {
         schema.CreatingTable = {};
@@ -401,14 +382,13 @@ describe('schema update checks', function () {
 
     it('without defining the default db alias', function () {
         var WithOutSchema = PersistObjectTemplate.create('WithOutSchema', {});
+        PersistObjectTemplate._injectObjectFunctions(WithOutSchema);
         var obj = new WithOutSchema();
-        expect(obj.persistSave.bind(this)).to.throw('DB Alias __default__ not set');
+        expect(obj.persistSave.bind(obj)).to.throw('DB Alias __default__ not set');
 
     });
 
     it('checkobject calls', function () {
-        //var WithOutSchema1 = PersistObjectTemplate.create('WithOutSchema1', {});
-        //var obj = new WithOutSchema1();
         var WithOutSchema1 = function() {};
         var obj = new WithOutSchema1();
         expect(PersistObjectTemplate.checkObject.bind(this, obj)).to.throw(Error, 'Attempt to save an non-templated Object');
@@ -430,7 +410,7 @@ describe('schema update checks', function () {
 
         var newTableWithoutTableDef = PersistObjectTemplate.create('newTableWithoutTableDef', {
             id: {type: String},
-            name: {type: String, value: 'PrimaryIndex'},
+            name: {type: String, value: 'PrimaryIndex', description:'comment name'},
             init: function (id, name) {
                 this.id = id;
                 this.name = name;
@@ -445,7 +425,7 @@ describe('schema update checks', function () {
                     addresses: {type: Array, of: AddressForMissingTableDef, value: []},
                     isMarried: {type: Boolean},
                     numberOfKids: {type: Number},
-                    dob: {type:Date }
+                    dob: {type:Date, description:'comment date' }
                 });
             PersistObjectTemplate._verifySchema();
             return PersistObjectTemplate.synchronizeKnexTableFromTemplate(newTableWithoutTableDef)
