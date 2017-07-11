@@ -1,3 +1,5 @@
+## 2.2.2
+* Fixes for syncronization of schema.
 ## 2.2.1
 * Support for the most recent version of knex.
 ## 2.2.0
